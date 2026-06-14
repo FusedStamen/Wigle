@@ -109,10 +109,11 @@ Both versions use bounding box classification - latitude/longitude ranges per re
 
 - **v1** - 4 coarse regions: US, India, Europe (entire continent), Canada
 - **v2** - 46 individual countries + all 50 US states + Washington DC. US records are written to both `countries/wigle_usa.csv` and the appropriate `us_states/` file.
+- **v3** - 46 individual countries + all 50 US states + Washington DC. US records are written to both `countries/wigle_usa.csv` and the appropriate `us_states/` file.
 
 Records with `0,0` coordinates, impossible values, or coordinates that fall outside all bounding boxes (e.g. open ocean) go to `wigle_other.csv` / `other` bucket.
 
-### Channel analysis (v2 only)
+### Channel analysis (v2 abd v3 only)
 For every output region and state, a `channel_summaries/channels_<region>.csv` is generated containing:
 - Band totals (2.4 GHz vs 5 GHz)
 - Per-channel record counts
