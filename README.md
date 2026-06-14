@@ -56,7 +56,7 @@ output/
 
 ---
 
-### v2
+### v2, v3
 
 ```bash
 python wigle_sort_v2.py \
@@ -140,10 +140,10 @@ For every output region and state, a `channel_summaries/channels_<region>.csv` i
 - `--no-channel-summaries` flag
 - Improved terminal summary with top 15 countries and full state breakdown
 
-### Removed
-- `os` import (unused)
-- Coarse `REGIONS` dict and `classify()` function replaced by `COUNTRIES` + `US_STATES` with separate classifiers
-- `write_region()` inner function replaced by module-level `write_csv()` helper
+## v2 → v3 Changes
+
+### Bug fixes
+- **Small State Fix** - v3 introduces a bbox_area() helper that computes the area of each bounding box, then pre-sorts both COUNTRIES and US_STATES by area (smallest first) at module load time into _COUNTRIES_SORTED and _US_STATES_SORTED. The classify_location() function then iterates over those sorted lists instead of the original unsorted dicts.
 
 ---
 
