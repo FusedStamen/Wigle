@@ -10,7 +10,7 @@ WiGLE CSV merger, deduplicator, and region splitter for wardriving data.
 |---------|------|-------------|
 | v1 | `wigle_sort.py` | 4-region splitter (US, India, Europe, Canada) |
 | v2 | `wigle_sort_v2.py` | 46 countries + all 50 US states/DC + channel analysis |
-
+| v3 | `wigle_sort_v3.py` | 46 countries + all 50 US states/DC + channel analysis |
 ---
 
 ## Requirements
