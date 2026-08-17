@@ -1,6 +1,6 @@
 ## wigle_beacon_spam_detector.py *(in progress)*
 
-Scans WiGLE-format CSVs for signatures consistent with beacon spam / SSID spoofing tools, without requiring a personal baseline or historical dataset. Built after a false-positive ban investigation revealed WiGLE's anti-cheat cannot currently distinguish a contributor who broadcasts spoofed beacons from a contributor who simply drives past someone else's spoofing device and picks it up passively in a normal scan.
+Scans WiGLE-format CSVs for signatures consistent with beacon spam / SSID spoofing tools, without requiring a personal baseline or historical dataset. Built after a ban investigation revealed WiGLE's anti-cheat cannot currently distinguish a contributor who broadcasts spoofed beacons from a contributor who simply drives past someone else's spoofing device and picks it up passively in a normal scan.
 
 **Goal:** give contributors and platform maintainers a way to independently verify whether flagged data was likely fabricated by the account holder or picked up incidentally, rather than relying on presence-of-fake-data alone as a proxy for fault.
 
