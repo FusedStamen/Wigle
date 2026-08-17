@@ -80,6 +80,21 @@ write-up is being kept as a record of a hypothesis that was tested rigorously an
 ruled out, not deleted, since a documented dead end is still useful context for anyone
 else looking at this problem.
 
+### Independent verification
+
+Separately from Hedge's explanation, the public firmware source backs this up
+structurally. In `WiFiScan.h`, every mode (wardrive, beacon spam, Rick Roll, etc.)
+is a distinct constant assigned to a single `currentScanMode` variable. The main
+loop in `WiFiScan.cpp` dispatches on that variable through a straight
+`if / else if` chain -- by construction, only one branch can execute per pass.
+This shows real, independent support for "the device can't run two modes at once" --
+not just Hedge's word, but the actual mechanism that makes it true.
+
+(Caveat: this confirms the *execution* model is single-state. It doesn't rule out
+every possible bug in the *transition* logic between modes -- that part is based
+on Hedge's direct knowledge of the codebase, not something independently audited
+line-by-line here.)
+
 ## What's still unknown
 
 - What the actual contamination mechanism was, if not this.
