@@ -1,5 +1,7 @@
 # Beacon Spam / Wardrive Cross-Contamination - Teardown Hypothesis
 
+**Status: CLOSED. Hypothesis ruled out.** See Resolution below.
+
 ## Background
 
 WiGLE has flagged accounts (including my own, later cleared) for beacon-spam-poisoned
@@ -13,7 +15,7 @@ underlying scan/attack code. If stopping a spam mode doesn't fully kill the back
 transmit task before wardrive mode starts, the device could pick up its own leftover spam
 beacons and log them as "discovered" networks with no second device or bad actor required.
 
-This is consistent with a known issue: the Biscuit app has occasionally failed to actually
+This was consistent with a known issue: the Biscuit app has occasionally failed to actually
 stop the active mode while indicating it had, requiring a manual reset to clear.
 
 ## Method
@@ -46,30 +48,45 @@ the stop timestamp.
 
 **8/8 clean.** No joke-pack or Rick Roll SSIDs, and no unfamiliar high-entropy/open
 SSIDs, appeared in any wardrive log across either platform, any spam mode tested, or any
-stop method (normal, rapid-cycled, or force-stop via warning screen). Rick Roll and Funny favored for easier detection.
+stop method (normal, rapid-cycled, or force-stop via warning screen).
 
 App/firmware at time of testing: app `1.0.20` (Beta 5 on some Android runs, no Beta tag
 on iPhone runs), firmware `v1.5.0`.
 
-## Interpretation
+## Resolution
 
-This doesn't rule the hypothesis out, but it means it isn't reproducible on current
-firmware under the conditions tested. Possibilities:
-- The bug was real and has since been patched in a recent app/firmware update
-  (there have been recent releases, it's worth checking changelogs for anything touching
-  scan-mode transitions, task cleanup, or the stop/scan command path).
-- The actual contamination mechanism is something other than a live orphaned task such as
-  stale in-memory SSID list state rather than a still-transmitting background
-  process - which wouldn't necessarily show up the way these trials were designed to
-  catch it.
-- The trigger condition is more specific than anything tried here (particular timing
-  window, a different mode combination, an older firmware version, specific hardware).
+I asked Hedge directly, since he knows the app/firmware internals: **is the "stuck,
+needs reset" issue capable of leaving spam mode silently running while the device
+also logs a wardrive?**
 
-## Next steps (if picked back up)
+His answer: **"0 chance."**
 
-- Check Biscuit changelog for any recent fix touching mode transitions / scan-stop /
-  task cleanup.
-- Ask Hedge whether the "stuck, needs reset" symptom he's seen maps to the same code
-  path tested here, or something else.
-- If a changelog entry turns up something relevant, that alone may be enough to
-  corroborate the theory without further live testing.
+The "stuck" symptom is a real issue, but it's an **app/device desync** - the app can
+lose sync with what the device is actually doing (e.g. showing the wrong state, or
+requiring a reset to resync) - not a case where the device is simultaneously running
+spam and wardrive. The firmware architecture doesn't allow a dual scan/attack state
+at all; that's not a mode the device can enter, stuck or otherwise. My original framing
+of this as a possible incomplete-teardown bug was based on a mistaken assumption about
+how the app/device relationship works. Hedge corrected this directly and it rules the
+hypothesis out.
+
+**Bottom line: I was wrong about the mechanism.** The 8/8 clean test results are
+consistent with that -- there was nothing to catch, because the thing I was testing
+for isn't possible on this firmware.
+
+The original question -- what actually caused the multi-month contamination WiGLE
+found across my account and others with "similar conditions" -- remains open. This
+write-up is being kept as a record of a hypothesis that was tested rigorously and
+ruled out, not deleted, since a documented dead end is still useful context for anyone
+else looking at this problem.
+
+## What's still unknown
+
+- What the actual contamination mechanism was, if not this.
+- Whether it's still an active issue on current firmware, or something that's already
+  been resolved incidentally by unrelated fixes.
+
+If you're reading this because you're chasing the same problem: this specific theory
+doesn't hold up. Worth ruling out other angles (client-side app bugs unrelated to
+device state, third-party interference after all, or something in WiGLE's own
+ingestion pipeline) before revisiting device-side teardown theories.
