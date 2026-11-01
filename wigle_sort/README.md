@@ -10,7 +10,7 @@ WiGLE CSV merger, deduplicator, region splitter, and channel analyzer for wardri
 |---------|------|-------------|
 | v1 | `wigle_sort.py` | 4-region splitter (US, India, Europe, Canada) |
 | v2 | `wigle_sort_v2.py` | 46 countries + all 50 US states/DC + channel analysis |
-| v3 | `wigle_sort_v3.py` | v2 + small state bounding box fix (RI, DC, etc.) |
+| v3 | `wigle_sort_v3.py` | v2 + small state bounding box fix (RI, DC, etc.) + `readme_stats.md` output |
 | — | `wigle_channel_compare.py` | Side-by-side channel distribution comparison between two scan datasets |
 
 ---
@@ -74,6 +74,7 @@ python wigle_sort_v3.py \
 | `--output` | ✅ | Output folder for sorted CSVs |
 | `--types` | ❌ | Comma-separated types to include. Default: `WIFI,BLE,BT,GSM,LTE,WCDMA` |
 | `--no-channel-summaries` | ❌ | Skip channel analysis CSVs for faster runs |
+| `--no-readme-stats` | ❌ | (v3 only) Skip writing `readme_stats.md` |
 
 **Output — v2/v3**
 
@@ -81,6 +82,7 @@ python wigle_sort_v3.py \
 output/
 ├── wigle_master_deduped.csv
 ├── wigle_no_gps.csv
+├── readme_stats.md           (v3 only)
 ├── countries/
 │   ├── wigle_usa.csv
 │   ├── wigle_india.csv
@@ -95,6 +97,17 @@ output/
     ├── channels_us_massachusetts.csv
     └── channels_<region>.csv
 ```
+
+#### readme_stats.md (v3)
+
+Each run writes `readme_stats.md` to the top level of the output folder. It is a markdown snippet that is ready to paste into a GitHub readme or profile:
+
+- Total unique records, input CSVs processed, countries covered, US states covered
+- Type breakdown table (WIFI, BLE, BT, GSM, LTE, WCDMA)
+- Top 15 countries by record count
+- Full US state table by record count
+
+The file starts with an HTML comment saying it is generated. Delete those comment lines when you paste it. Pass `--no-readme-stats` to skip it.
 
 ---
 
@@ -185,6 +198,10 @@ For every output region and state, v2/v3 generate a `channel_summaries/channels_
 
 **Bug fixes**
 - Small state fix — v3 introduces a `bbox_area()` helper that computes the area of each bounding box, then pre-sorts both `COUNTRIES` and `US_STATES` by area smallest-first at module load time. Classification then iterates the sorted lists so small states like Rhode Island match before larger overlapping neighbors like Massachusetts and Connecticut.
+
+**New features**
+- `readme_stats.md` output - a paste-ready markdown stats snippet (totals, type breakdown, top 15 countries, US states) written to the output folder on every run
+- `--no-readme-stats` flag to skip it
 
 ### wigle_channel_compare.py (new)
 
