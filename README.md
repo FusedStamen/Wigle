@@ -9,6 +9,7 @@ Tools and write-ups for working with [WiGLE](https://wigle.net) wardriving data:
 | Folder / file | What it does | Status |
 |---------------|--------------|--------|
 | [`wigle_sort/`](wigle_sort/) | Merge all your WiGLE CSV exports, dedupe by MAC + Type, split by country and US state, write channel summaries and a paste-ready stats snippet. **v4 streams through SQLite and handles multi-GB exports.** | Working |
+| [`wigle_cell_heat/`](wigle_cell_heat/) | Turns your own WiGLE exports (`.csv`, `.csv.gz`, `.zip`) into a per-cell heat table on a 0.02 degree grid, to see where you have already collected heavily. Streams files, no network calls. | Working |
 | [`wigle_sort/wigle_channel_compare.py`](wigle_sort/) | Side-by-side channel distribution comparison between two scan datasets (A/B test scan setups). | Working |
 | [`beacon_spam_detector/`](beacon_spam_detector/) | Design notes for a self-contained spam/SSID-spoof detector that needs no personal baseline. | In progress, script not published yet |
 | [`beacon_spam_contamination/`](beacon_spam_contamination/) | Write-up of the firmware teardown hypothesis for self-logged spam beacons, and how it was ruled out. | Closed |
@@ -16,11 +17,10 @@ Tools and write-ups for working with [WiGLE](https://wigle.net) wardriving data:
 
 ### Related tools in other repos
 
-These work with WiGLE data too and live in [FusedStamen/warroom](https://github.com/FusedStamen/warroom):
+This one uses the WiGLE API and lives in [FusedStamen/warroom](https://github.com/FusedStamen/warroom):
 
 | Tool | What it does |
 |------|--------------|
-| `wigle_cell_heat.py` | Turns your own WiGLE exports (`.csv`, `.csv.gz`, `.zip`) into a per-cell heat table on the 0.02 degree grid, so you can see where you have already collected heavily and where you have not. Streams the files and makes no network calls. |
 | `find_gap_streets.py` | Finds residential streets with no WiGLE coverage and builds a GPX route. Quota-aware and resumable. Uses the WiGLE API. |
 
 ---
@@ -45,10 +45,10 @@ Wigle Sorted/
 └── channel_summaries/    channels_<region>.csv
 ```
 
-Then see where you have already driven heavily (from the warroom repo):
+Then see where you have already driven heavily (heat table of your own coverage):
 
 ```bash
-py wigle_cell_heat.py "E:\wardrive\Wigle Full Downloads"
+py wigle_cell_heat/wigle_cell_heat.py "E:\wardrive\Wigle Full Downloads"
 ```
 
 Full options for `wigle_sort` are in [`wigle_sort/README.md`](wigle_sort/README.md).
