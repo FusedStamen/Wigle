@@ -11,7 +11,6 @@ Tools and write-ups for working with [WiGLE](https://wigle.net) wardriving data:
 | [`wigle_sort/`](wigle_sort/) | Merge all your WiGLE CSV exports, dedupe by MAC + Type, split by country and US state, write channel summaries and a paste-ready stats snippet. **v4 streams through SQLite and handles multi-GB exports.** | Working |
 | [`wigle_cell_heat/`](wigle_cell_heat/) | Turns your own WiGLE exports (`.csv`, `.csv.gz`, `.zip`) into a per-cell heat table on a 0.02 degree grid, to see where you have already collected heavily. Streams files, no network calls. | Working |
 | [`wigle_sort/wigle_channel_compare.py`](wigle_sort/) | Side-by-side channel distribution comparison between two scan datasets (A/B test scan setups). | Working |
-| [`beacon_spam_detector/`](beacon_spam_detector/) | Design notes for a self-contained spam/SSID-spoof detector that needs no personal baseline. | In progress, script not published yet |
 | [`beacon_spam_contamination/`](beacon_spam_contamination/) | Write-up of the firmware teardown hypothesis for self-logged spam beacons, and how it was ruled out. | Closed |
 | [`CHANGELOG.md`](CHANGELOG.md) | Version history for `wigle_sort`. | |
 
