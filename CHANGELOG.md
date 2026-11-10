@@ -1,4 +1,60 @@
-# wigle_sort.py — v1 → v2 Changelog
+# Changelog
+
+Newest first. Covers `wigle_sort` and the tools next to it.
+
+---
+
+## wigle_sort v3 -> v4 (streaming, low-memory)
+
+v4 is a rewrite of how the data is handled, not of what comes out. Same output folder layout as v3.
+
+**Why:** v3 reads every CSV into one pandas DataFrame, then sorts and dedupes it in memory. That works for a few hundred MB of exports and runs out of memory on a full multi-GB history.
+
+**How v4 works**
+- Pass 1 streams every input file row by row into a temporary SQLite file, keeping one row per MAC + Type (strongest RSSI wins).
+- Pass 2 reads that table back one row at a time, classifies each row, and appends it to the output files. Only counters stay in memory.
+- Measured on 2.5 million synthetic rows (about 200 MB of CSV): about 40 MB peak memory, about 80 seconds. Memory stays flat as input grows. Disk use during the run is roughly the size of the deduped data; the temp file is removed at the end.
+
+**New**
+- Reads `.csv`, `.csv.gz` and `.zip` files (zips may contain `.csv` or `.csv.gz`). v3 only read `.csv`.
+- `--tmp-dir` flag to put the temporary SQLite file on a drive with free space.
+- Skips anything inside the output folder, so a re-run never ingests its own output.
+- No pandas dependency (standard library only).
+- Values are written exactly as they were in the source files. v3 passed everything through pandas, which rewrote integer columns such as Channel as floats (`6.0`).
+
+**Changed**
+- `readme_stats.md`: "Countries covered" no longer counts the `other` bucket as a country.
+- Channel summaries: channel numbers are integers (`6`, not `6.0`), and out-of-range values such as `-1` (WiGLE server exports) are grouped as `unknown` instead of `5GHz_ch-1`.
+- Rows inside output files are ordered by MAC. v3 left them ordered by RSSI as a side effect of its sort.
+
+**Unchanged**
+- Dedupe rule (MAC + Type, strongest RSSI), bounding boxes, smallest-box-first matching, all CLI flags from v3.
+- Checked against v3 on test data with no RSSI ties: same files, same rows, same channel counts.
+
+**Known limit**
+- Where two rows for the same MAC + Type have identical RSSI, v3 and v4 may keep different ones. It is arbitrary in both. It only affects which location is used for that network.
+
+---
+
+## wigle_sort v2 -> v3
+
+**Bug fix**
+- Small-state classification. v3 adds a `bbox_area()` helper and sorts `COUNTRIES` and `US_STATES` by bounding box area, smallest first, so Rhode Island and DC match before the larger overlapping boxes of Massachusetts, Connecticut and Maryland/Virginia.
+
+**New**
+- `readme_stats.md`: a paste-ready markdown stats snippet (totals, type breakdown, top 15 countries, US states) written on every run.
+- `--no-readme-stats` flag to skip it.
+
+---
+
+## wigle_channel_compare.py (new)
+
+Standalone A/B comparison of channel distributions between two WiGLE-format datasets. Takes local device logs, since WiGLE server exports strip channel data. See `wigle_sort/README.md`.
+
+---
+
+## wigle_sort v1 -> v2
+
 
 ## Bug Fixes
 
