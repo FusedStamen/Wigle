@@ -4,6 +4,12 @@ Newest first. Covers `wigle_sort` and the tools next to it.
 
 ---
 
+## wigle_cell_heat.py (new)
+
+Per-cell heat table from your own WiGLE exports (`.csv`, `.csv.gz`, `.zip`) on the 0.02 degree grid: distinct networks, observations, files touched, first/last seen. Streams the data and makes no network calls. See `wigle_cell_heat/README.md`.
+
+---
+
 ## wigle_sort v3 -> v4 (streaming, low-memory)
 
 v4 is a rewrite of how the data is handled, not of what comes out. Same output folder layout as v3.
