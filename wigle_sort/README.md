@@ -11,17 +11,19 @@ WiGLE CSV merger, deduplicator, region splitter, and channel analyzer for wardri
 | v1 | `wigle_sort.py` | 4-region splitter (US, India, Europe, Canada) |
 | v2 | `wigle_sort_v2.py` | 46 countries + all 50 US states/DC + channel analysis |
 | v3 | `wigle_sort_v3.py` | v2 + small state bounding box fix (RI, DC, etc.) + `readme_stats.md` output |
+| v4 | `wigle_sort_v4.py` | v3 rewritten to stream through SQLite: flat memory use on multi-GB exports, reads `.csv.gz` and `.zip`, no pandas |
 | — | `wigle_channel_compare.py` | Side-by-side channel distribution comparison between two scan datasets |
 
 ---
 
 ## Requirements
 
-```bash
-pip install pandas
-```
+Python 3.8+.
 
-Python 3.8+
+- v4 uses only the standard library.
+- v1, v2, v3 and `wigle_channel_compare.py` need pandas: `pip install pandas`.
+
+**Which version to use:** v4 for anything large (it handles 1 GB or more without trouble). v3 is kept for reference and is fine for small data sets.
 
 ---
 
@@ -55,6 +57,26 @@ output/
 ├── wigle_master_deduped.csv
 └── wigle_no_gps.csv
 ```
+
+---
+
+### v4 (recommended)
+
+```bash
+python wigle_sort_v4.py \
+  --input  "E:\TECH DATA\wardrive\Wigle Full Downloads" \
+  --output "E:\TECH DATA\wardrive\Wigle Sorted"
+```
+
+Same arguments and same output folder as v3, plus:
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--tmp-dir` | no | Folder for the temporary SQLite file. Default is the output folder. Use a drive with free space about the size of your deduped data. |
+
+Reads `.csv`, `.csv.gz` and `.zip` files under `--input`. Files inside the output folder are skipped, so you can re-run safely. The temp file is deleted when the run finishes; if a run is killed, delete `_wigle_sort_tmp.sqlite` by hand.
+
+How it works: pass 1 streams every row into a temporary SQLite table keyed on MAC + Type (strongest RSSI wins); pass 2 reads the table back one row at a time, classifies it, and appends it to the output files. Memory stays flat regardless of input size. Full differences from v3 are in `../CHANGELOG.md`.
 
 ---
 
@@ -202,6 +224,13 @@ For every output region and state, v2/v3 generate a `channel_summaries/channels_
 **New features**
 - `readme_stats.md` output - a paste-ready markdown stats snippet (totals, type breakdown, top 15 countries, US states) written to the output folder on every run
 - `--no-readme-stats` flag to skip it
+
+### v3 -> v4
+
+Streaming rewrite for large data sets. Full list in `../CHANGELOG.md`.
+
+- Flat memory use (SQLite-backed dedupe), reads `.csv.gz` and `.zip`, no pandas, `--tmp-dir` flag
+- Values written exactly as read (no `6.0` channel numbers), `other` no longer counted as a country in `readme_stats.md`
 
 ### wigle_channel_compare.py (new)
 
