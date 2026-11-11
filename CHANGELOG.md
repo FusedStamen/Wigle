@@ -4,6 +4,12 @@ Newest first. Covers `wigle_sort` and the tools next to it.
 
 ---
 
+## wigle_density.py (new)
+
+Per-cell count of recently seen WiFi networks from the WiGLE API, on the same 0.02 degree grid, for valuing cells you have not visited. Cached, resumable, quota-aware. Feeds the [wardrive route planner](https://github.com/FusedStamen/wardrive-route-planner). See `wigle_density/README.md`.
+
+---
+
 ## wigle_cell_heat.py (new)
 
 Per-cell heat table from your own WiGLE exports (`.csv`, `.csv.gz`, `.zip`) on the 0.02 degree grid: distinct networks, observations, files touched, first/last seen. Streams the data and makes no network calls. See `wigle_cell_heat/README.md`.
